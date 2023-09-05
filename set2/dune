@@ -1,0 +1,6 @@
+(library
+ (name cryptopals_ocaml_set2)
+ (libraries core cryptopals_ocaml core_unix expect_test_helpers_core mirage-crypto)
+ (inline_tests
+  (deps challenge10.txt))
+ (preprocess (pps ppx_jane)))

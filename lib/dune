@@ -1,0 +1,4 @@
+(library
+ (name cryptopals_ocaml)
+ (libraries core cstruct)
+ (preprocess (pps ppx_jane)))
