@@ -25,18 +25,7 @@ let get_keysize input ~min ~max =
   |> fst
 
 let solve_for_keysize input keysize =
-  let num_whole_blocks = String.length input / keysize in
-  let size_last_block = String.length input % keysize in
-  let key =
-    List.init keysize ~f:(fun i ->
-        let str =
-          List.init (num_whole_blocks + (if i < size_last_block then 1 else 0)) ~f:(fun j ->
-              String.get input (j * keysize + i))
-          |> String.of_list
-        in
-        Xor.find_single_char_cipher_key str)
-    |> String.of_list
-  in
+  let key = Xor.find_multi_char_cipher_key input ~keysize in
   Xor.multi_char_cipher input ~key
 
 let%expect_test "hamming" =
