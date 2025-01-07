@@ -6,9 +6,7 @@ let decrypt input ~iv ~blocksize ~key ~cipher =
   List.folding_map blocks ~init:iv ~f:(fun prev_ciphertext next_ciphertext ->
       let next_plaintext =
         next_ciphertext
-        |> Cstruct.of_string
         |> cipher
-        |> Cstruct.to_string
         |> String_util.xor_raw prev_ciphertext
       in
       next_ciphertext, next_plaintext)
@@ -22,9 +20,7 @@ let encrypt input ~iv ~blocksize ~key ~cipher =
   List.folding_map blocks ~init:iv ~f:(fun prev_ciphertext next_plaintext ->
       let next_ciphertext =
         String_util.xor_raw prev_ciphertext next_plaintext
-        |> Cstruct.of_string
         |> cipher
-        |> Cstruct.to_string
       in
       next_ciphertext, next_ciphertext)
   |> String.concat

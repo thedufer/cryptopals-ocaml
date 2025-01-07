@@ -2,7 +2,7 @@ open! Core
 open! Import
 
 let oracle =
-  let open Mirage_crypto.Cipher_block.AES.ECB in
+  let open Mirage_crypto.AES.ECB in
   let plaintext_suffix =
     String.filter ~f:(fun c -> not (Char.is_whitespace c))
       "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg
@@ -11,7 +11,7 @@ let oracle =
        YnkK"
     |> String_util.base64_to_raw
   in
-  let key = String_util.random_bytes 16 |> Cstruct.of_string |> of_secret in
+  let key = String_util.random_bytes 16 |> of_secret in
   fun plaintext_prefix ->
     let plaintext = plaintext_prefix ^ plaintext_suffix in
     let ciphertext = Ecb.encrypt plaintext ~blocksize:16 ~key ~cipher:encrypt in

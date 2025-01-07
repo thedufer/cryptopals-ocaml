@@ -8,9 +8,9 @@ let random_string length =
   Bytes.to_string bytes
 
 let oracle plaintext =
-  let open Mirage_crypto.Cipher_block.AES.ECB in
+  let open Mirage_crypto.AES.ECB in
   let mode = if Random.bool () then `ECB else `CBC in
-  let key = random_string 16 |> Cstruct.of_string |> of_secret in
+  let key = random_string 16 |> of_secret in
   let plaintext = random_string (Random.int 6 + 5) ^ plaintext ^ random_string (Random.int 6 + 5) in
   let ciphertext =
     match mode with

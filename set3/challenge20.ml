@@ -8,8 +8,8 @@ let input =
       |> String_util.base64_to_raw)
 
 let encrypt () =
-  let open Mirage_crypto.Cipher_block.AES.ECB in
-  let key = String_util.random_bytes 16 |> Cstruct.of_string |> of_secret in
+  let open Mirage_crypto.AES.ECB in
+  let key = String_util.random_bytes 16 |> of_secret in
   List.map input ~f:(Ctr.encrypt ~nonce:0L ~key ~cipher:encrypt)
 
 let solve () =

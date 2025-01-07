@@ -19,8 +19,8 @@ let profile_for email =
   serialize [("email", email); ("uid", "10"); ("role", "user")]
 
 let profile_for_encrypted, decrypt_profile =
-  let open Mirage_crypto.Cipher_block.AES.ECB in
-  let key = String_util.random_bytes 16 |> Cstruct.of_string |> of_secret in
+  let open Mirage_crypto.AES.ECB in
+  let key = String_util.random_bytes 16 |> of_secret in
   let profile_for_encrypted email =
     profile_for email
     |> Ecb.encrypt ~blocksize:16 ~key ~cipher:encrypt

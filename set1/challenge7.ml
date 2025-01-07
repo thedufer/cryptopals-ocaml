@@ -6,8 +6,8 @@ let get_base64_data () =
   String.filter input ~f:(fun c -> not (Char.is_whitespace c))
 
 let%expect_test "final" =
-  let open Mirage_crypto.Cipher_block.AES.ECB in
-  let key = of_secret (Cstruct.of_string "YELLOW SUBMARINE") in
+  let open Mirage_crypto.AES.ECB in
+  let key = of_secret "YELLOW SUBMARINE" in
   get_base64_data ()
   |> String_util.base64_to_raw
   |> Ecb.decrypt ~cipher:decrypt ~key ~blocksize:16

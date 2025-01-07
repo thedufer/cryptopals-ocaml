@@ -2,7 +2,7 @@ open! Core
 open! Import
 
 let oracle =
-  let open Mirage_crypto.Cipher_block.AES.ECB in
+  let open Mirage_crypto.AES.ECB in
   let plaintext_suffix =
     String.filter ~f:(fun c -> not (Char.is_whitespace c))
       "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkg
@@ -12,7 +12,7 @@ let oracle =
     |> String_util.base64_to_raw
   in
   fun ?prefix_length () ->
-    let key = String_util.random_bytes 16 |> Cstruct.of_string |> of_secret in
+    let key = String_util.random_bytes 16 |> of_secret in
     let prefix_length =
       match prefix_length with
       | None -> Random.int 32

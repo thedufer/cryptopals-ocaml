@@ -2,8 +2,8 @@ open! Core
 open! Import
 
 let oracle, iv, check_padding =
-  let open Mirage_crypto.Cipher_block.AES.ECB in
-  let key = String_util.random_bytes 16 |> Cstruct.of_string |> of_secret in
+  let open Mirage_crypto.AES.ECB in
+  let key = String_util.random_bytes 16 |> of_secret in
   let iv = String.init 16 ~f:(const '\x00') in
   let blocksize = 16 in
   let data =

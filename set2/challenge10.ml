@@ -4,10 +4,10 @@ open! Import
 let%expect_test "round-trip" =
   let input = "ONEtwoTHREEfourFIVEsixSEVENeightNINEtenELEVENtwelve" in
   let round_tripped =
-    let open Mirage_crypto.Cipher_block.AES.ECB in
+    let open Mirage_crypto.AES.ECB in
     let iv = String.init 16 ~f:(const '\000') in
     let blocksize = 16 in
-    let key = of_secret (Cstruct.of_string "YELLOW SUBMARINE") in
+    let key = of_secret "YELLOW SUBMARINE" in
     Cbc.encrypt input ~iv ~blocksize ~key ~cipher:encrypt
     |> Cbc.decrypt ~iv ~blocksize ~key ~cipher:decrypt
   in
@@ -21,10 +21,10 @@ let%expect_test "final" =
     |> String_util.base64_to_raw
   in
   let result =
-    let open Mirage_crypto.Cipher_block.AES.ECB in
+    let open Mirage_crypto.AES.ECB in
     Cbc.decrypt
       input
-      ~iv:(String.init 16 ~f:(const '\000')) ~blocksize:16 ~key:(of_secret (Cstruct.of_string "YELLOW SUBMARINE"))
+      ~iv:(String.init 16 ~f:(const '\000')) ~blocksize:16 ~key:(of_secret "YELLOW SUBMARINE")
       ~cipher:decrypt
   in
   print_endline result;
