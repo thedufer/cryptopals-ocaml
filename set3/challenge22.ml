@@ -1,16 +1,11 @@
 open! Core
 open! Import
 
-let sec_since_epoch () =
-  Time_ns_unix.now ()
-  |> Time_ns_unix.to_span_since_epoch
-  |> Time_ns_unix.Span.to_int_sec
-
 let slow_rand () =
   let before_wait_len = Random.int 960 + 40 in
   let after_wait_len = Random.int 960 + 40 in
   Core_unix.sleep before_wait_len;
-  let seed = sec_since_epoch () in
+  let seed = Util.sec_since_epoch () in
   let mt = Mt19937.init seed in
   Core_unix.sleep after_wait_len;
   print_endline (Int.to_string seed);

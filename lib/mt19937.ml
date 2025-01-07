@@ -62,7 +62,7 @@ let twist t =
   done;
   t.index <- 0l
 
-let next t_ =
+let next' t_ =
   if t_.index >= n then twist t_;
   let y = t_.mt.(t_.index) in
   let y = y lxor ((y lsr u) land d) in
@@ -70,4 +70,8 @@ let next t_ =
   let y = y lxor ((y lsl t) land c) in
   let y = y lxor (y lsr l) in
   t_.index <- t_.index + 1l;
+  y
+
+let next t_ =
+  let y = next' t_ in
   Int.((to_i y) land ((1 lsl 32) - 1))
