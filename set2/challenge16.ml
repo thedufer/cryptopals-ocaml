@@ -33,7 +33,7 @@ let solve oracle =
   *)
   let input = String.init 21 ~f:(const 'B') ^ ":admin<true" in
   let ciphertext = oracle input in
-  (* now flip the low bit in the 53rd and 59th characters of the plaintext, but
+  (* now flip the low bit in the 53rd and 59th characters of the plaintext, by
      flipping the low bit in the 37th and 43rd characters of the ciphertext *)
   let ciphertext_b = Bytes.of_string ciphertext in
   let flip_low_bit c = Char.of_int_exn (Char.to_int c lxor 1) in
