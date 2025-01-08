@@ -30,3 +30,5 @@ val to_blocks : string -> blocksize:int -> string list
 val map_byte : string -> int -> f:(char -> char) -> string
 val map_byte_i : string -> int -> f:(int -> int) -> string
 val map_bytes_i : string -> (int * (int -> int)) list -> string
+
+val sha1 : string -> string

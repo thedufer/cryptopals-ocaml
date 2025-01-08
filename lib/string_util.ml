@@ -239,3 +239,66 @@ let map_byte_i str idx ~f =
 
 let map_bytes_i str updates =
   List.fold updates ~init:str ~f:(fun str (idx, f) -> map_byte_i str idx ~f)
+
+let sha1 input =
+  let h0 = 0x67452301l in
+  let h1 = 0xEFCDAB89l in
+  let h2 = 0x98BADCFEl in
+  let h3 = 0x10325476l in
+  let h4 = 0xC3D2E1F0l in
+  let ml = String.length input * 8 in
+  let input = input ^ String.of_char '\x80' in
+  let padding =
+    let len_with_length_suffix = String.length input + 8 in
+    let padding_len = 64 - len_with_length_suffix % 64 in
+    let padding_len = if padding_len = 64 then 0 else padding_len in
+    String.make padding_len '\000'
+  in
+  let len_suffix =
+    let bs = Bigstring.create 8 in
+    Bigstring.unsafe_set_int64_t_be bs ~pos:0 (Int64.of_int ml);
+    Bigstring.to_string bs
+  in
+  let input = input ^ padding ^ len_suffix in
+  let h0, h1, h2, h3, h4 =
+    to_blocks input ~blocksize:64
+    |> List.fold ~init:(h0, h1, h2, h3, h4) ~f:(fun (h0, h1, h2, h3, h4) block ->
+        let w = Array.create ~len:80 0l in
+        let block_bs = Bigstring.of_string block in
+        for i = 0 to 15 do
+          w.(i) <- Bigstring.get_int32_t_be block_bs ~pos:(4 * i)
+        done;
+        let leftrotate i n =
+          let open Int32.O in
+          assert (Int.between n ~low:0 ~high:32);
+          (i lsl n) lor (i lsr Int.O.(32 - n))
+        in
+        for i = 16 to 79 do
+          let (lxor) = Int32.(lxor) in
+          w.(i) <- leftrotate (w.(i-3) lxor w.(i-8) lxor w.(i-14) lxor w.(i-16)) 1
+        done;
+        let a, b, c, d, e =
+          Array.foldi w ~init:(h0, h1, h2, h3, h4) ~f:(fun i (a, b, c, d, e) w_i ->
+              let open Int32.O in
+              let f, k =
+                if Int.between i ~low:0 ~high:19 then
+                  (b land c) lor ((lnot b) land d), 0x5A827999l
+                else if Int.between i ~low:20 ~high:39 then
+                  b lxor c lxor d, 0x6ED9EBA1l
+                else if Int.between i ~low:40 ~high:59 then
+                  (b land c) lor (b land d) lor (c land d), 0x8F1BBCDCl
+                else
+                  b lxor c lxor d, 0xCA62C1D6l
+              in
+              (leftrotate a 5) + f + e + k + w_i , a, leftrotate b 30, c, d)
+        in
+        let open Int32.O in
+        (h0 + a, h1 + b, h2 + c, h3 + d, h4 + e))
+  in
+  let result_bs = Bigstring.create 20 in
+  Bigstring.set_int32_t_be result_bs ~pos:0 h0;
+  Bigstring.set_int32_t_be result_bs ~pos:4 h1;
+  Bigstring.set_int32_t_be result_bs ~pos:8 h2;
+  Bigstring.set_int32_t_be result_bs ~pos:12 h3;
+  Bigstring.set_int32_t_be result_bs ~pos:16 h4;
+  Bigstring.to_string result_bs
