@@ -2,10 +2,10 @@ open Core
 open Import
 
 let sha1_auth ~key msg =
-  String_util.sha1 (key ^ msg)
+  Hash.sha1 (key ^ msg)
 
 let%expect_test "sha1" =
-  String_util.sha1 "The quick brown fox jumps over the lazy dog" |> String_util.raw_to_hex |> print_endline;
+  Hash.sha1 "The quick brown fox jumps over the lazy dog" |> String_util.raw_to_hex |> print_endline;
   [%expect {|2fd4e1c67a2d28fced849ee1bb76e7391b93eb12|}]
 
 let%expect_test "auth" =
