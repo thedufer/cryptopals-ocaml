@@ -12,7 +12,6 @@ let ciphertext, decryptor, check_key =
   in
   let decryptor ciphertext =
     let plaintext = Cbc.decrypt ciphertext ~iv ~key ~cipher:decrypt ~blocksize in
-    print_endline plaintext;
     let is_valid = String.for_all plaintext ~f:(fun c -> (Char.to_int c) lxor (1 lsl 7) = 0) in
     if is_valid then Ok () else Error plaintext
   in
@@ -62,6 +61,4 @@ let solve ciphertext decryptor =
 let%expect_test "final" =
   let key = solve ciphertext decryptor in
   check_key key |> Bool.to_string |> print_endline;
-  [%expect {|
-    onetwothreefourfŠökñã©D‘úıy¦^y;H¬(]ÃOòÂÎsü$3å™g¾<Û¤¼A¯±YËÎõ-JiÌÒLûÖÔÁì
-    true |}]
+  [%expect {| true |}]
