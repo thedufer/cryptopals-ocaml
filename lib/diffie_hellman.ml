@@ -1,12 +1,8 @@
 open! Core
-
-module type DHC = sig
-  val p : Z.t
-  val g : int
-end
+include Diffie_hellman_intf
 
 module Make (C : DHC) = struct
-  open C
+  include C
   type pub = Z.t
   type priv = Z.t
 
@@ -14,6 +10,8 @@ module Make (C : DHC) = struct
     let priv = Z.random_int p in
     let pub = Z.powm (Z.of_int g) priv p in
     pub, priv
+
+  let pub_of_z p = p
 
   let session ~my_priv ~peer_pub =
     Z.powm peer_pub my_priv p
