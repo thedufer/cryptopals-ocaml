@@ -9,7 +9,7 @@ let%expect_test "hmac-sha1" =
   [%expect {| de7c9b85b8b78aa6bc8a7a36f70a90701c9db4d9 |}];
   return ()
 
-let insecure_compare s1 s2 =
+let insecure_compare ~delay s1 s2 =
   let get_opt s i =
     if i < String.length s then Some (String.get s i) else None
   in
@@ -19,14 +19,15 @@ let insecure_compare s1 s2 =
     | None, Some _ | Some _, None -> return false
     | Some c1, Some c2 ->
       if Char.equal c1 c2 then
-        let%bind () = Clock_ns.after (Time_ns.Span.of_sec 0.05) in
+        let%bind () = Clock_ns.after delay in
         aux (i + 1)
       else return false
   in
   aux 0
 
-let start_server () =
+let start_server ~delay =
   let key = String_util.random_bytes 64 in
+  let insecure_compare = insecure_compare ~delay in
   let%bind server =
     Cohttp_async.Server.create
       ~on_handler_error:`Ignore
@@ -95,7 +96,7 @@ let test ~port ~file ~signature =
   return ()
 
 let%expect_test "test server" =
-  let%bind server, key = start_server () in
+  let%bind server, key = start_server ~delay:(Time_ns.Span.of_ms 50.) in
   let port = Cohttp_async.Server.listening_on server in
   let test = test ~port in
   let%bind () = test ~file:"foo" ~signature:"bar" in
@@ -116,7 +117,7 @@ let%expect_test "test server" =
 (* commented out because it takes too long *)
 (*
 let%expect_test "final" =
-  let%bind server, key = start_server () in
+  let%bind server, _key = start_server ~delay:(Time_ns.Span.of_ms 50.) in
   let port = Cohttp_async.Server.listening_on server in
   let file = "this-is-a-file.txt" in
   let%bind signature = solve port ~file in
