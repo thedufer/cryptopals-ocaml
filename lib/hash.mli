@@ -7,3 +7,5 @@ val sha1 : string -> string
 val md4_padding : len:int -> string
 val md4_seeded : a:int32 -> b:int32 -> c:int32 -> d:int32 -> prefix_len:int -> string -> string
 val md4 : string -> string
+
+val hmac_sha1 : key:string -> string -> string

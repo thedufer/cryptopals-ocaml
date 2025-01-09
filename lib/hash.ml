@@ -162,3 +162,17 @@ let md4 =
   let c = 0x98BADCFEl in
   let d = 0x10325476l in
   md4_seeded ~a ~b ~c ~d ~prefix_len:0
+
+let hmac ~hash ~block_size ~key input =
+  let key = if String.length key > block_size then hash key else key in
+  let key =
+    let padding =
+      String.make (block_size - String.length key) '\000'
+    in
+    key ^ padding
+  in
+  let opad = String.make block_size '\x5c' in
+  let ipad = String.make block_size '\x36' in
+  hash (String_util.xor_raw key opad ^ hash (String_util.xor_raw key ipad ^ input))
+
+let hmac_sha1 = hmac ~hash:sha1 ~block_size:64
