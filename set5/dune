@@ -1,0 +1,5 @@
+(library
+ (name cryptopals_ocaml_set5)
+ (libraries core core_unix cryptopals_ocaml expect_test_helpers_core mirage-crypto core_unix.time_ns_unix zarith)
+ (inline_tests)
+ (preprocess (pps ppx_jane)))

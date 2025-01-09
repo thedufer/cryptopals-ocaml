@@ -1,4 +1,4 @@
 (library
  (name cryptopals_ocaml)
- (libraries core cstruct core_unix.time_ns_unix)
+ (libraries core cstruct core_unix.time_ns_unix zarith)
  (preprocess (pps ppx_jane)))

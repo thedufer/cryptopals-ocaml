@@ -1,6 +1,6 @@
 (library
  (name cryptopals_ocaml_set4)
- (libraries async cohttp-async core core_unix cryptopals_ocaml expect_test_helpers_core mirage-crypto core_unix.time_ns_unix)
+ (libraries async cohttp-async core core_unix cryptopals_ocaml mirage-crypto core_unix.time_ns_unix)
  (inline_tests
   (deps challenge25.txt))
  (preprocess (pps ppx_jane)))
