@@ -2,7 +2,7 @@ open! Core
 
 module type DHC = sig
   val p : Z.t
-  val g : int
+  val g : Z.t
 end
 
 module type S = sig
