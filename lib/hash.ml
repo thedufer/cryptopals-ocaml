@@ -176,3 +176,6 @@ let hmac ~hash ~block_size ~key input =
   hash (String_util.xor_raw key opad ^ hash (String_util.xor_raw key ipad ^ input))
 
 let hmac_sha1 = hmac ~hash:sha1 ~block_size:64
+
+let sha256 input = Digestif.SHA256.digest_string input |> Digestif.SHA256.to_raw_string
+let hmac_sha256 ~key input = Digestif.SHA256.hmac_string ~key input |> Digestif.SHA256.to_raw_string

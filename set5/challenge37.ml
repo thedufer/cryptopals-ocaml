@@ -76,7 +76,7 @@ let client_S_0 ~port ~email ~big_a ~big_s =
   Writer.write_bin_prot writer Protocol.bin_writer_proposal proposal;
   let%bind (salt, _big_b) = read_bin_prot_exn reader Protocol.bin_reader_salt in
   let big_k = Z.to_bits big_s |> Digestif.SHA256.digest_string |> Digestif.SHA256.to_raw_string in
-  let login = Digestif.SHA256.hmac_string ~key:salt big_k |> Digestif.SHA256.to_raw_string in
+  let login = Digestif.SHA256.hmac_string ~key:big_k salt |> Digestif.SHA256.to_raw_string in
   Writer.write_bin_prot writer Protocol.bin_writer_login login;
   let%bind result = read_bin_prot_exn reader Protocol.bin_reader_result in
   print_s [%sexp (result : Protocol.result)];

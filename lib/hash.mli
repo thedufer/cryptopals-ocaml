@@ -9,3 +9,6 @@ val md4_seeded : a:int32 -> b:int32 -> c:int32 -> d:int32 -> prefix_len:int -> s
 val md4 : string -> string
 
 val hmac_sha1 : key:string -> string -> string
+
+val sha256 : string -> string
+val hmac_sha256 : key:string -> string -> string
