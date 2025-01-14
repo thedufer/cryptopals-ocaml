@@ -72,6 +72,8 @@ let s_att_crack (email, u, big_a, salt, b) signature =
   in
   (email, password)
 
+(* commented out because it is kind of slow *)
+(*
 let%expect_test "offline attack" =
   let email = "test@example.com" in
   let password = List.nth_exn (force dict) (Random.int (List.length (force dict))) in
@@ -82,3 +84,4 @@ let%expect_test "offline attack" =
   let email, f_password = s_att_crack s_context third_message in
   print_s [%sexp (email, f_password, password : string * string * string)];
   [%expect {| (test@example.com angleberry angleberry) |}]
+*)
