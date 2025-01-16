@@ -1,0 +1,5 @@
+(library
+ (name cryptopals_ocaml_set6)
+ (libraries async core cryptopals_ocaml zarith)
+ (inline_tests)
+ (preprocess (pps ppx_jane)))
