@@ -1,23 +1,9 @@
 open Core
 open! Import
 
-let random_prime ~bytes =
-  let init =
-    String_util.random_bytes bytes |> Z.of_bits
-  in
-  let init =
-    if Z.is_even init then Z.succ init else init
-  in
-  let rec aux candidate =
-    if Z.probab_prime candidate 10 <> 0
-    then candidate
-    else aux (candidate |> Z.succ |> Z.succ)
-  in
-  aux init
-
 let%expect_test "primegen" =
   let test () =
-    random_prime ~bytes:1 |> Z.to_string |> print_endline
+    Rsa.random_prime ~bytes:1 |> Z.to_string |> print_endline
   in
   test ();
   test ();
@@ -63,29 +49,10 @@ let%expect_test "rsa example" =
   assert (Z.equal orig_plaintext plaintext);
   [%expect {||}]
 
-let gen_rsa_keys ~bytes =
-  let p, q = random_prime ~bytes, random_prime ~bytes in
-  let n = Z.mul p q in
-  let et = Z.mul (Z.pred p) (Z.pred q) in
-  let e = Z.of_int 3 in
-  let d = invmod e et in
-  let pub = e, n in
-  let priv = d, n in
-  (pub, priv)
-
-let encrypt (e, n) msg =
-  Z.powm msg e n
-
-let decrypt (d, n) msg =
-  Z.powm msg d n
-
-let to_bits_trim z =
-  Z.to_bits z |> String.rstrip ~drop:(function '\000' -> true | _ -> false)
-
 let%expect_test "big rsa" =
-  let pub, priv = gen_rsa_keys ~bytes:32 in
+  let pub, priv = Rsa.gen_rsa_keys ~bytes:32 in
   let msg = "this is a bit longer" in
-  let cipher = encrypt pub (Z.of_bits msg) in
-  let plain = decrypt priv cipher |> to_bits_trim in
+  let cipher = Rsa.encrypt pub (Z.of_bits msg) in
+  let plain = Rsa.decrypt priv cipher |> Rsa.to_bits_trim in
   assert (String.equal plain msg);
   [%expect {||}]
